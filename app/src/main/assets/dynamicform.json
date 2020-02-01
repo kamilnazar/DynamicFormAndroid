@@ -1,0 +1,32 @@
+{
+  "form-name": "User Details",
+  "fields": [
+    {
+      "field-name": "name",
+      "type": "text",
+      "required": false
+    },
+    {
+      "field-name": "age",
+      "type": "number",
+      "required": false,
+      "min": 10,
+      "max": 60
+    },
+    {
+      "field-name": "gender",
+      "type": "dropdown",
+      "options": [
+        "male",
+        "female",
+        "other"
+      ]
+    },
+    {
+      "field-name": "address",
+      "type": "multiline"
+    }
+  ]
+}
+
+
