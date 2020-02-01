@@ -1,2 +1,2 @@
 # DynamicFormAndroid
-Generate from inputs using information from JSON file.
+Generate form inputs using information from JSON file.
