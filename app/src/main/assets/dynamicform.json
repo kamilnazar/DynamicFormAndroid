@@ -7,24 +7,57 @@
       "required": false
     },
     {
-      "field-name": "age",
-      "type": "number",
-      "required": false,
-      "min": 10,
-      "max": 60
-    },
-    {
-      "field-name": "gender",
-      "type": "dropdown",
-      "options": [
-        "male",
-        "female",
-        "other"
+      "field-name": "details",
+      "type": "composite",
+      "fields": [
+        {
+          "field-name": "age",
+          "type": "composite",
+          "fields": [
+            {
+              "field-name": "age1",
+              "type": "number"
+            },
+            {
+              "field-name": "age2",
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "field-name": "gender",
+          "type": "dropdown",
+          "options": [
+            "male",
+            "female",
+            "other"
+          ]
+        },
+        {
+          "field-name": "address",
+          "type": "composite",
+          "fields": [
+            {
+              "field-name": "address-line-1",
+              "type": "text"
+            },
+            {
+              "field-name": "street-address",
+              "type": "composite",
+              "fields": [
+                {
+                  "field-name": "street",
+                  "type": "text"
+                },
+                {
+                  "field-name": "buildings",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        }
       ]
-    },
-    {
-      "field-name": "address",
-      "type": "multiline"
     }
   ]
 }
