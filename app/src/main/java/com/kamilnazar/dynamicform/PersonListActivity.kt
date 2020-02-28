@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kamilnazar.dynamicform.dynamicform.DynamicFormActivity
 import com.kamilnazar.dynamicform.dynamicform.RecordListAdapter
 import kotlinx.android.synthetic.main.activity_persons.*
+import java.nio.charset.Charset
 
 class PersonListActivity : AppCompatActivity() {
     private val TAG = PersonListActivity::class.java.simpleName
@@ -17,7 +18,13 @@ class PersonListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_persons)
 
-        add_person.setOnClickListener { DynamicFormActivity.start(this, DYNAMIC_FORM_REQUEST) }
+        add_person.setOnClickListener {
+            DynamicFormActivity.start(
+                this,
+                DYNAMIC_FORM_REQUEST,
+                readAssetFile()
+            )
+        }
         record_list.layoutManager = LinearLayoutManager(this)
         record_list.adapter = adpter
     }
@@ -36,11 +43,19 @@ class PersonListActivity : AppCompatActivity() {
         }
     }
 
-    private fun setTotalCount(){
+    private fun readAssetFile(): String {
+        val iStream = assets.open(DYNAMIC_FORM_NAME)
+        val buffer = ByteArray(iStream.available())
+        iStream.read(buffer)
+        return String(buffer, Charset.forName("UTF-8"))
+    }
+
+    private fun setTotalCount() {
         total_reports.text = adpter.itemCount.toString()
     }
 
     companion object {
         private const val DYNAMIC_FORM_REQUEST = 548
+        private const val DYNAMIC_FORM_NAME = "dynamicform.json"
     }
 }

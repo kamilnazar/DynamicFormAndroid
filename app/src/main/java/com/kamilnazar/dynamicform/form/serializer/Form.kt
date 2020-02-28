@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Form(
-    @Json(name = "form-name") val formName: String,
+    @Json(name = "form-name") val formName: String = "",
     @Json(name = "fields") val fields: List<FormField> = listOf()
 )

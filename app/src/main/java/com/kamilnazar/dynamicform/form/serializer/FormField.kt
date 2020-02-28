@@ -10,7 +10,8 @@ data class FormField(
     @Json(name = "options") val options: Array<String> = arrayOf(),
     @Json(name = "required") val required: Boolean = false,
     @Json(name = "min") val min: Int?,
-    @Json(name = "max") val max: Int?
+    @Json(name = "max") val max: Int?,
+    @Json(name = "fields") val fields: List<FormField> = listOf()
 ) {
     //auto generated
     override fun equals(other: Any?): Boolean {

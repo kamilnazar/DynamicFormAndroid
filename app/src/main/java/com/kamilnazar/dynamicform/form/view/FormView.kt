@@ -47,10 +47,15 @@ class FormView(private val context: Context, private val form: Form) {
             "number" -> generateNumberInput(formField)
             "multiline" -> generateTextInput(formField)
             "dropdown" -> generateSpinner(formField)
+            "composite" -> generateCompositeField(formField)
             else -> throw FormTypeException(
                 "Unknown form type ${formField.type} found for form field $formField"
             )
         }
+    }
+
+    private fun generateCompositeField(formField: FormField): BaseView {
+        return CompositeField(formField, context)
     }
 
     private fun generateTextInput(formField: FormField) =
@@ -60,4 +65,13 @@ class FormView(private val context: Context, private val form: Form) {
         NumberInput(formField, context)
 
     private fun generateSpinner(formField: FormField) = SelectInput(formField, context)
+
+    fun checkCompositeResult(requestCode: Int): CompositeField? {
+        for (baseView in childView) {
+            if (baseView is CompositeField && baseView.COMPOSITE_REQUEST == requestCode) {
+                return baseView
+            }
+        }
+        return null
+    }
 }

@@ -13,7 +13,6 @@ import com.kamilnazar.dynamicform.form.view.FormView
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_dynamic_form.*
 import org.json.JSONObject
-import java.nio.charset.Charset
 
 
 class DynamicFormActivity : AppCompatActivity() {
@@ -22,28 +21,36 @@ class DynamicFormActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dynamic_form)
-        deserializeJson()?.let {
-            generateView(root, it)
+        intent.getStringExtra(JSON_STRING_EXTRA)?.let { jsonString ->
+            deserializeJson(jsonString)?.let {
+                generateView(root, it)
+            }
         }
+
         record_add.setOnClickListener { getDataFromForm() }
     }
 
-    private fun deserializeJson(): Form? {
+    private fun deserializeJson(jsonString: String): Form? {
         val moshi = Moshi.Builder().build()
         val formAdapter = moshi.adapter<Form>(
             Form::class.java
         )
-        val form = formAdapter.fromJson(readAssetFile())
+        val form = formAdapter.fromJson(jsonString)
         if (form == null)
             Toast.makeText(this, "Reading asset file failed", Toast.LENGTH_SHORT).show()
         return form
     }
 
-    private fun readAssetFile(): String {
-        val iStream = assets.open(DYNAMIC_FORM_NAME)
-        val buffer = ByteArray(iStream.available())
-        iStream.read(buffer)
-        return String(buffer, Charset.forName("UTF-8"))
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK)
+            formView.checkCompositeResult(requestCode)?.let { compositeView ->
+                data?.let {
+                    val formData =
+                        it.getSerializableExtra(DYNAMIC_FORM_DATA) as HashMap<String, Any?>
+                    compositeView.setFormData(formData)
+                }
+            }
     }
 
     private fun generateView(rootView: LinearLayout, form: Form) {
@@ -69,10 +76,13 @@ class DynamicFormActivity : AppCompatActivity() {
     companion object {
         private const val DYNAMIC_FORM_NAME = "dynamicform.json"
         const val DYNAMIC_FORM_DATA = "dynamic_form_data"
+        private const val JSON_STRING_EXTRA = "json_string_extra"
         @JvmStatic
-        fun start(context: Activity, request: Int) {
+        fun start(context: Activity, request: Int, jsonString: String) {
             context.startActivityForResult(
-                Intent(context, DynamicFormActivity::class.java),
+                Intent(context, DynamicFormActivity::class.java).apply {
+                    putExtra(JSON_STRING_EXTRA, jsonString)
+                },
                 request
             )
         }
